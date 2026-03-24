@@ -5,6 +5,7 @@ pipeline {
 
         stage('Clone Code') {
             steps {
+                // Specify the branch explicitly
                 git branch: 'main', url: 'https://github.com/Tejasc-05/QR.git'
             }
         }
@@ -12,7 +13,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh 'docker build -t qr-app .'
+                    docker.build("qr-app")
                 }
             }
         }
@@ -20,8 +21,9 @@ pipeline {
         stage('Run Container') {
             steps {
                 script {
-                    sh 'docker rm -f qr-container || true'
-                    sh 'docker run -d -p 3000:3000 --name qr-container qr-app'
+                    // Use bat instead of sh on Windows
+                    bat 'docker rm -f qr-container || echo Container does not exist'
+                    bat 'docker run -d -p 3000:3000 --name qr-container qr-app'
                 }
             }
         }
